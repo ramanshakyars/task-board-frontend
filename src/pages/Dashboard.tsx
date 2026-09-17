@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import TaskCard from "../components/TaskCard";
 import SpecialLoader from "../components/SpecialLoader";
+import ConfirmDialog from "../components/ConfirmDialog";
 import TaskService from "../services/TaskService";
 import ToastService from "../services/ToastService";
 import type { Task, TaskFilters } from "../interfaces/TaskInterfaces";
@@ -17,6 +18,7 @@ function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
 
   const [filters, setFilters] = useState<TaskFilters>({
     status: "",
@@ -57,18 +59,23 @@ function Dashboard() {
     loadTasks(updated);
   };
 
-  const deleteTask = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this task?")) return;
+  const deleteTask = (id: number) => {
+    setTaskToDelete(id);
+  };
+
+  const executeDeleteTask = async () => {
+    if (taskToDelete === null) return;
 
     try {
       LoaderService.show();
-      await TaskService.deleteTask(id);
-      setTasks(tasks.filter((t) => t.id !== id));
+      await TaskService.deleteTask(taskToDelete);
+      setTasks(tasks.filter((t) => t.id !== taskToDelete));
       ToastService.success("Task deleted successfully");
     } catch {
       ToastService.error("Failed to delete task");
     } finally {
       LoaderService.hide();
+      setTaskToDelete(null);
     }
   };
 
@@ -127,6 +134,13 @@ function Dashboard() {
     <>
       <Navbar />
 
+      <ConfirmDialog
+        isOpen={taskToDelete !== null}
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+        onConfirm={executeDeleteTask}
+        onCancel={() => setTaskToDelete(null)}
+      />
       <div className="container-fluid p-4">
 
         {/* Heaeder */}

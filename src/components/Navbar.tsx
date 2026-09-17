@@ -9,25 +9,29 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark px-4">
-      <Link to="/dashboard" className="navbar-brand">
-        Task Board
-      </Link>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow-sm px-4">
+      <div className="container-fluid">
+        <Link to="/dashboard" className="navbar-brand fw-bold fs-4 tracking-wide">
+          Task Board
+        </Link>
 
-      <div className="d-flex align-items-center gap-3">
-        <span className="text-white">
-          {user?.username}
-          {AuthService.isAdmin() && (
-            <span className="badge bg-danger ms-2">ADMIN</span>
-          )}
-        </span>
+        <div className="d-flex align-items-center gap-3 ms-auto">
+          <span className="text-white fw-medium fs-6 d-flex align-items-center">
+            Hi, {user?.username}
+            {AuthService.isAdmin() && (
+              <span className="badge bg-danger rounded-pill ms-2 px-2 py-1 shadow-sm">
+                ADMIN
+              </span>
+            )}
+          </span>
 
-        <button
-          className="btn btn-outline-light btn-sm"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
+          <button
+            className="btn btn-outline-light rounded-pill px-4 ms-2 fw-semibold"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );
