@@ -1,3 +1,4 @@
+import type { NavigateFunction } from "react-router-dom";
 import PathConfig from "../config/PathConfig";
 import { Role } from "../enums/Roles";
 import type { LoginRequest, LoginResponse, User } from "../interfaces/AuthInterfaces";
@@ -22,7 +23,7 @@ class AuthService {
     return user;
   }
 
-  async logout(): Promise<void> {
+  async logout(navigate?: NavigateFunction): Promise<void> {
     const refresh = StorageService.getRefreshToken();
 
     try {
@@ -33,7 +34,9 @@ class AuthService {
       // even if blacklsit fails, we still clear local storage
     } finally {
       StorageService.clear();
-      window.location.href = "/login";
+      if (navigate) {
+        navigate("/login");
+      }
     }
   }
 

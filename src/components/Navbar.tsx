@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 
 function Navbar() {
+  const navigate = useNavigate();
   const user = AuthService.getLoggedInUser();
 
   const handleLogout = async () => {
-    await AuthService.logout();
+    await AuthService.logout(navigate);
   };
 
   return (
